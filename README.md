@@ -1,18 +1,58 @@
-# Salesforce DX Project: Next Steps
+🚀 Salesforce Task Management Project
+This project includes:
+✅ A Custom Object (Task__c) for managing tasks
+✅ A Lightning Web Component (LWC) for displaying tasks
+✅ An Apex Batch/Queueable Job for auto-completing overdue tasks
+✅ An Apex REST API (TaskRestService.cls) to fetch tasks via HTTP
+✅ Deployment and Testing Instructions
 
-Now that you’ve created a Salesforce DX project, what’s next? Here are some documentation resources to get you started.
 
-## How Do You Plan to Deploy Your Changes?
+📌 Prerequisites
+Before deploying, ensure you have:
 
-Do you want to deploy a set of changes, or create a self-contained application? Choose a [development model](https://developer.salesforce.com/tools/vscode/en/user-guide/development-models).
+✅ Salesforce CLI installed
+✅ A Dev Hub-enabled Salesforce org
 
-## Configure Your Salesforce DX Project
+# Deployment Steps
+🔹 1.1 Authenticate Salesforce CLI with Your Dev Hub:
+    sfdx auth:web:login -d -a DevHub
+    This opens up a login page to the salesforce.org
+🔹 1.2 Deploy Code to Salesforce:
+    sf project deploy start --target-org <username>(salesforce.org)
+    Ensure to enable communication between cli and the org.
 
-The `sfdx-project.json` file contains useful configuration information for your project. See [Salesforce DX Project Configuration](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ws_config.htm) in the _Salesforce DX Developer Guide_ for details about this file.
+# Accessing & Testing the LWC (taskList)
+  Create a Lightning App Page
+  Go to Salesforce Setup → App Builder
+  Click New Lightning Page → Lightning App Page
+  Drag & Drop the taskList component into the page
+  Save & Activate
 
-## Read All About It
+# Running & Testing the Apex Batch/Queueable Job
+  Run Manually from Developer Console
+    Open Developer Console
+    Go to Debug → Open Execute Anonymous Window
+    Run the following command:
+      system.enqueueJob(new CompleteOverdueTasksBatch());
+    Check results in Setup → Apex Jobs
 
-- [Salesforce Extensions Documentation](https://developer.salesforce.com/tools/vscode/)
-- [Salesforce CLI Setup Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_setup.meta/sfdx_setup/sfdx_setup_intro.htm)
-- [Salesforce DX Developer Guide](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_intro.htm)
-- [Salesforce CLI Command Reference](https://developer.salesforce.com/docs/atlas.en-us.sfdx_cli_reference.meta/sfdx_cli_reference/cli_reference.htm)
+# Testing the Apex REST Endpoint
+  Get All Tasks Using cURL
+    curl -X GET -H "Authorization: Bearer YOUR_ACCESS_TOKEN" \
+    "https://your-org-instance.salesforce.com/services/apexrest/tasks"
+
+  or using postman:
+  Open postman
+  set method to GET
+  and enter the following url:
+    https://your-org-instance.salesforce.com/services/apexrest/tasks
+  Under headers enter:
+    Authorization: Bearer YOUR_ACCESS_TOKEN
+  click send
+
+# Known Limitations & Assumptions
+  Authentication → The REST API requires a valid Salesforce access token.
+  Batch Job Scheduling → The job must be manually scheduled if automation is required.
+  LWC Availability → The component works only in Lightning Experience, not Classic.
+  Error Handling → The REST API returns a 500 error if something goes wrong.
+  
