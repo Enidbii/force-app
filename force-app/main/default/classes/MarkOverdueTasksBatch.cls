@@ -8,11 +8,18 @@ public with sharing class MarkOverdueTasksBatch implements Database.Batchable<SO
     }
 
     // Processes each batch of tasks
-    public void execute(Database.BatchableContext bc, List<Task__c> taskList) {
-        for (Task__c task : taskList) {
+    public void execute(Database.BatchableContext bc, List<SObject> taskList) {
+        List<Task__c> tasksToUpdate = new List<Task__c>();
+        
+        for (SObject obj : taskList) {
+            Task__c task = (Task__c) obj;
             task.Completed__c = true; // Mark task as completed
+            tasksToUpdate.add(task);
         }
-        update taskList; // Perform bulk update
+
+        if (!tasksToUpdate.isEmpty()) {
+            update tasksToUpdate; // Perform bulk update
+        }
     }
 
     // Finish method (optional, for logging or post-processing)
